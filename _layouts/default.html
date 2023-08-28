@@ -1,0 +1,61 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="{{ page.language }}">
+    <head>
+        <title>{{ page.title }}</title>
+        <link rel="stylesheet" href="{{ page.style }}">
+    </head>
+    <body>
+        <p id="demo"></p>
+
+        <script>
+
+            const requestURL = '{{ site.url }}/assets/i18n/{{ page.name }}.json';
+            const request = new Request(requestURL);
+            
+            fetch(request)
+                .then(response =>
+                {
+                    if (response.ok)
+                    {
+                        return response.json();
+                    }
+                })
+                .then((data) =>
+                {
+                    
+                    const languageKeys = Object.keys(data);
+                    const fullLanguage = navigator.language || navigator.userLanguage;
+                    const language = fullLanguage.split('-')[0];
+
+                    for (let i = 0; i < languageKeys.length; i++)
+                    {
+                        if (i > 0)
+                        {
+                            document.write('︱');
+                        }
+
+                        const key = languageKeys[i];
+                        if (key == language)
+                        {
+                            document.write('**');
+                        }
+
+                        document.write(`[${key}](${key})`);
+                        
+                        if (key == language)
+                        {
+                            document.write('**');
+                        }
+                    }
+
+                    document.getElementById("demo").innerHTML = JSON.stringify({ fullLanguage, language, data });
+                })
+        </script>
+
+        {{ content }}
+
+    </body>
+</html>
